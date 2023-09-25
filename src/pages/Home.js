@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { Link, useParams } from 'react-router-dom'
 
 function Home() {
     const [items, setItems] = useState([])
@@ -7,6 +8,13 @@ function Home() {
     const getItems = async () => {
         const response = await axios.get("http://localhost:8080/items")
         setItems(response.data)
+    }
+
+    const {id} = useParams()
+
+    const deleteItem = async (id) => {
+        await axios.delete(`http://localhost:8080/items/${id}`)
+        getItems()
     }
 
     useEffect(() => {
@@ -35,9 +43,9 @@ function Home() {
                             {/* <td>{item.description}</td> */}
                             <td><strong>{item.price} lei</strong></td>
                             <td>
-                                <button className="btn btn-primary mx-2">View</button>
-                                <button className="btn btn-outline-primary mx-2">Edit</button>
-                                <button className="btn btn-danger mx-2">Delete</button>
+                                <Link className="btn btn-primary mx-2" to={`/viewItem/${item.id}`}>View</Link>
+                                <Link className="btn btn-outline-primary mx-2" to = {`/editItem/${item.id}`}>Edit</Link>
+                                <button className="btn btn-danger mx-2" onClick={() => deleteItem(item.id)}>Delete</button>
                             </td>
                             </tr>
                          ) )
